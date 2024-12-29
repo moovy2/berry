@@ -2,7 +2,6 @@ import {Filename}                from '@yarnpkg/fslib';
 
 import {generatePrettyJson}      from './generatePrettyJson';
 import {generateSerializedState} from './generateSerializedState';
-// @ts-expect-error
 import getTemplate               from './hook';
 import {SerializedState}         from './types';
 import {PnpSettings}             from './types';
@@ -11,6 +10,7 @@ export function generateLoader(shebang: string | null | undefined, loader: strin
   return [
     shebang ? `${shebang}\n` : ``,
     `/* eslint-disable */\n`,
+    `// @ts-nocheck\n`,
     `"use strict";\n`,
     `\n`,
     loader,
@@ -45,7 +45,10 @@ function generateInlinedSetup(data: SerializedState) {
 function generateSplitSetup() {
   return [
     `function $$SETUP_STATE(hydrateRuntimeState, basePath) {\n`,
-    `  return hydrateRuntimeState(require(${JSON.stringify(`./${Filename.pnpData}`)}), {basePath: basePath || __dirname});\n`,
+    `  const fs = require('fs');\n`,
+    `  const path = require('path');\n`,
+    `  const pnpDataFilepath = path.resolve(__dirname, ${JSON.stringify(Filename.pnpData)});\n`,
+    `  return hydrateRuntimeState(JSON.parse(fs.readFileSync(pnpDataFilepath, 'utf8')), {basePath: basePath || __dirname});\n`,
     `}\n`,
   ].join(``);
 }

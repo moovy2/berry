@@ -21,6 +21,7 @@ describe(`Features`, () => {
         await xfs.writeJsonPromise(manifestPath, {
           name: `eslint`,
           version: `1.0.0`,
+          bin: `./bin/eslint.js`,
           dependencies: {
             [`no-deps`]: `1.0.0`,
           },
@@ -58,6 +59,7 @@ describe(`Features`, () => {
         await xfs.writeJsonPromise(manifestPath, {
           name: `eslint`,
           version: `1.0.0`,
+          bin: `./bin/eslint.js`,
           dependencies: {
             [`no-deps`]: `1.0.0`,
           },
@@ -150,8 +152,7 @@ describe(`Features`, () => {
 
           // Same thing, but this file has virtual instances.
           const yarnpkgCli = npath.normalize(npath.join(__dirname, `../../../../yarnpkg-cli/sources/index.ts`))
-            .replace(/\\/g, `/`)
-            .replace(/^\/?/, `/`);
+            .replace(/\\/g, `/`);
 
           // Some sanity check to make sure everything is A-OK
           expect(lodashTypeDef).toContain(`.zip`);
